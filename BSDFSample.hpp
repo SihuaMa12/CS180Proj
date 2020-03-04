@@ -1,6 +1,6 @@
 #ifndef BSDFSAM_H
 #define BSDFSAM_H
-#include <Vector.hpp>
+#include <Material.hpp>
 
 
 enum REFT {LAMB, PERR};
