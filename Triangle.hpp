@@ -78,9 +78,12 @@ public:
     MeshTriangle(const std::string& filename)
     {
         objl::Loader loader;
+        // std::cout << "hi" << std::endl;
         loader.LoadFile(filename);
+        // std::cout << "Ciallo" << std::endl;
 
-        assert(loader.LoadedMeshes.size() == 1);
+        // assert(loader.LoadedMeshes.size() == 1);
+        // std::cout << "he21s" << loader.LoadedMeshes.size() << std::endl;
         auto mesh = loader.LoadedMeshes[0];
 
         Vector3f min_vert = Vector3f{std::numeric_limits<float>::infinity(),

@@ -370,6 +370,39 @@ namespace objl
             return "";
         }
 
+        void superSplit(const std::string& in, std::vector<std::string>& out, std::string token)
+        {
+            out.clear();
+
+            std::string temp;
+
+            for (int i = 0; i < int(in.size()); i++)
+            {
+                std::string test = in.substr(i, token.size());
+
+                if (test == token)
+                {
+                    if (!temp.empty())
+                    {
+                        out.push_back(temp);
+                        temp.clear();
+                        i += (int)token.size() - 1;
+                    }
+                    
+                }
+                else if (i + token.size() >= in.size())
+                {
+                    temp += in.substr(i, token.size());
+                    out.push_back(temp);
+                    break;
+                }
+                else
+                {
+                    temp += in[i];
+                }
+            }
+        }
+
         // Get first token of string
         inline std::string firstToken(const std::string &in)
         {
@@ -424,6 +457,7 @@ namespace objl
         //
         // If the file is unable to be found
         // or unable to be loaded return false
+        
         bool LoadFile(std::string Path)
         {
             // If the file is not an .obj file return false
@@ -477,7 +511,6 @@ namespace objl
                     }
                 }
 #endif
-
                 // Generate a Mesh Object or Prepare for an object to be created
                 if (algorithm::firstToken(curline) == "o" || algorithm::firstToken(curline) == "g" || curline[0] == 'g')
                 {
@@ -536,8 +569,12 @@ namespace objl
                 {
                     std::vector<std::string> spos;
                     Vector3 vpos;
-                    algorithm::split(algorithm::tail(curline), spos, " ");
-
+                    algorithm::superSplit(algorithm::tail(curline), spos, " ");
+                    for(int i = 0;i < spos.size();i++)
+                    std::cout << "he1" << std::endl;
+                    std::cout << curline << std::endl;
+                    for(int i = 0;i<spos.size();i++)
+                        std::cout << spos[i] <<" " << int(spos[i].c_str()[0])<< " " << spos[i].length()<<std::endl;
                     vpos.X = std::stof(spos[0]);
                     vpos.Y = std::stof(spos[1]);
                     vpos.Z = std::stof(spos[2]);
@@ -549,8 +586,8 @@ namespace objl
                 {
                     std::vector<std::string> stex;
                     Vector2 vtex;
-                    algorithm::split(algorithm::tail(curline), stex, " ");
-
+                    algorithm::superSplit(algorithm::tail(curline), stex, " ");
+                    std::cout << "he2" << std::endl;
                     vtex.X = std::stof(stex[0]);
                     vtex.Y = std::stof(stex[1]);
 
@@ -561,8 +598,9 @@ namespace objl
                 {
                     std::vector<std::string> snor;
                     Vector3 vnor;
-                    algorithm::split(algorithm::tail(curline), snor, " ");
+                    algorithm::superSplit(algorithm::tail(curline), snor, " ");
 
+                    std::cout << "he3" << std::endl;
                     vnor.X = std::stof(snor[0]);
                     vnor.Y = std::stof(snor[1]);
                     vnor.Z = std::stof(snor[2]);
@@ -573,6 +611,7 @@ namespace objl
                 if (algorithm::firstToken(curline) == "f")
                 {
                     // Generate the vertices
+                    // std::cout << "hereG" << std::endl;
                     std::vector<Vertex> vVerts;
                     GenVerticesFromRawOBJ(vVerts, Positions, TCoords, Normals, curline);
 
@@ -729,12 +768,15 @@ namespace objl
             std::vector<std::string> sface, svert;
             Vertex vVert;
             algorithm::split(algorithm::tail(icurline), sface, " ");
+            // std::cout << sface.size() << std::endl;
+            // std::cout << icurline << std::endl;
 
             bool noNormal = false;
 
             // For every given vertex do this
             for (int i = 0; i < int(sface.size()); i++)
             {
+                // std::cout << "ss " << sface[i] << endl 
                 // See What type the vertex is.
                 int vtype;
 
@@ -775,6 +817,9 @@ namespace objl
                 {
                     case 1: // P
                     {
+                        std::cout << "here" << (int)(sface[i].c_str()[0]) <<"e" <<std::endl;
+                        // std::cout << "first" << std::endl;
+                        // std::cout << sface[i] << std::endl;
                         vVert.Position = algorithm::getElement(iPositions, svert[0]);
                         vVert.TextureCoordinate = Vector2(0, 0);
                         noNormal = true;
@@ -783,6 +828,7 @@ namespace objl
                     }
                     case 2: // P/T
                     {
+                        // std::cout << "second" << std::endl;
                         vVert.Position = algorithm::getElement(iPositions, svert[0]);
                         vVert.TextureCoordinate = algorithm::getElement(iTCoords, svert[1]);
                         noNormal = true;
@@ -791,6 +837,7 @@ namespace objl
                     }
                     case 3: // P//N
                     {
+                        // std::cout << "third" << std::endl;
                         vVert.Position = algorithm::getElement(iPositions, svert[0]);
                         vVert.TextureCoordinate = Vector2(0, 0);
                         vVert.Normal = algorithm::getElement(iNormals, svert[2]);
@@ -799,6 +846,8 @@ namespace objl
                     }
                     case 4: // P/T/N
                     {
+                        // std::cout << "fourth" << std::endl;
+                        // std::cout << sface[i] << std::endl;
                         vVert.Position = algorithm::getElement(iPositions, svert[0]);
                         vVert.TextureCoordinate = algorithm::getElement(iTCoords, svert[1]);
                         vVert.Normal = algorithm::getElement(iNormals, svert[2]);
@@ -807,6 +856,7 @@ namespace objl
                     }
                     default:
                     {
+                        // std::cout << "fifth" << std::endl;
                         break;
                     }
                 }

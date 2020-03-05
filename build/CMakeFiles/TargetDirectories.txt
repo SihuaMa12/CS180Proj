@@ -1,0 +1,3 @@
+/home/sihuama/CS180Proj/build/CMakeFiles/rebuild_cache.dir
+/home/sihuama/CS180Proj/build/CMakeFiles/RayTracing.dir
+/home/sihuama/CS180Proj/build/CMakeFiles/edit_cache.dir

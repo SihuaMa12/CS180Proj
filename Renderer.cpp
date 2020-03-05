@@ -20,7 +20,7 @@ void Renderer::Render(const Scene& scene)
     Vector3f *pix = framebuffer;
     float scale = tan(deg2rad(scene.fov * 0.5));
     float imageAspectRatio = scene.width / (float)scene.height;
-    Vector3f orig(-1, 5, 10);
+    Vector3f orig(-5, 5, 10);
     for (uint32_t j = 0; j < scene.height; ++j) {
         for (uint32_t i = 0; i < scene.width; ++i) {
             //generate primary ray direction
