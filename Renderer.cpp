@@ -14,13 +14,15 @@ const float EPSILON = 0.00001;
 // The main render function. This where we iterate over all pixels in the image,
 // generate primary rays and cast these rays into the scene. The content of the
 // framebuffer is saved to a file.
-void Renderer::Render(const Scene& scene)
+void Renderer::Render(const Scene& scene, int sp)
 {
     Vector3f *framebuffer = new Vector3f[scene.width * scene.height];
     Vector3f *pix = framebuffer;
     float scale = tan(deg2rad(scene.fov * 0.5));
     float imageAspectRatio = scene.width / (float)scene.height;
-    Vector3f orig(-5, 5, 10);
+    Vector3f orig(-1, 5, 10);
+    for(int m = 0;m < sp; m++)
+    {
     for (uint32_t j = 0; j < scene.height; ++j) {
         for (uint32_t i = 0; i < scene.width; ++i) {
             //generate primary ray direction
@@ -38,9 +40,11 @@ void Renderer::Render(const Scene& scene)
 
             Vector3f dir = Vector3f(x, y, -1); // Don't forget to normalize this direction!
             dir = normalize(dir);
-            *(pix++) = scene.castRay(Ray(orig, dir), 0);
+            *(pix++) += scene.castRay(Ray(orig, dir), 0)/sp;
         }
-        UpdateProgress(j / (float)scene.height);
+        UpdateProgress((j / (float)scene.height ) / sp + float(m)/float(sp));
+    }
+    pix = framebuffer;
     }
 
     // save framebuffer to file

@@ -17,7 +17,8 @@ struct hit_payload
 class Renderer
 {
 public:
-    void Render(const Scene& scene);
+    void Render(const Scene& scene, int sp);
 
 private:
+    int spp;
 };

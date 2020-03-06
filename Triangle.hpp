@@ -64,6 +64,7 @@ public:
                               const uint32_t& index, const Vector2f& uv,
                               Vector3f& N, Vector2f& st) const override
     {
+        // std::cout << "jj" << std::endl;
         N = normal;
         //        throw std::runtime_error("triangle::getSurfaceProperties not
         //        implemented.");
@@ -80,18 +81,22 @@ public:
         objl::Loader loader;
         // std::cout << "hi" << std::endl;
         loader.LoadFile(filename);
-        // std::cout << "Ciallo" << std::endl;
-
-        // assert(loader.LoadedMeshes.size() == 1);
-        // std::cout << "he21s" << loader.LoadedMeshes.size() << std::endl;
-        auto mesh = loader.LoadedMeshes[0];
-
         Vector3f min_vert = Vector3f{std::numeric_limits<float>::infinity(),
                                      std::numeric_limits<float>::infinity(),
                                      std::numeric_limits<float>::infinity()};
         Vector3f max_vert = Vector3f{-std::numeric_limits<float>::infinity(),
                                      -std::numeric_limits<float>::infinity(),
                                      -std::numeric_limits<float>::infinity()};
+        // std::cout << "Ciallo" << std::endl;
+
+        // assert(loader.LoadedMeshes.size() == 1);
+        // std::cout << "he21s" << loader.LoadedMeshes.size() << std::endl;
+        for(int so = 0; so < loader.LoadedMeshes.size();so++)
+        {
+            auto mesh = loader.LoadedMeshes[so];
+
+        
+        // for (int i = 0; i < mesh.Vertices.size(); i += 3) {
         for (int i = 0; i < mesh.Vertices.size(); i += 3) {
             std::array<Vector3f, 3> face_vertices;
             for (int j = 0; j < 3; j++) {
@@ -113,11 +118,12 @@ public:
                 new Material(MaterialType::DIFFUSE_AND_GLOSSY,
                              Vector3f(0.5, 0.5, 0.5), Vector3f(0, 0, 0));
             new_mat->Kd = 0.6;
-            new_mat->Ks = 0.0;
-            new_mat->specularExponent = 0;
+            new_mat->Ks = 0.2;
+            new_mat->specularExponent = 300;
 
             triangles.emplace_back(face_vertices[0], face_vertices[1],
                                    face_vertices[2], new_mat);
+        }
         }
 
         bounding_box = Bounds3(min_vert, max_vert);
@@ -157,6 +163,7 @@ public:
                               const uint32_t& index, const Vector2f& uv,
                               Vector3f& N, Vector2f& st) const
     {
+
         const Vector3f& v0 = vertices[vertexIndex[index * 3]];
         const Vector3f& v1 = vertices[vertexIndex[index * 3 + 1]];
         const Vector3f& v2 = vertices[vertexIndex[index * 3 + 2]];
@@ -171,6 +178,7 @@ public:
 
     Vector3f evalDiffuseColor(const Vector2f& st) const
     {
+        std::cout << "some" << std::endl;
         float scale = 5;
         float pattern =
             (fmodf(st.x * scale, 1) > 0.5) ^ (fmodf(st.y * scale, 1) > 0.5);

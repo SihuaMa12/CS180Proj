@@ -63,6 +63,10 @@ Vector.hpp
 /home/sihuama/CS180Proj/Material.hpp
 Vector.hpp
 /home/sihuama/CS180Proj/Vector.hpp
+random
+-
+cmath
+-
 
 /home/sihuama/CS180Proj/OBJ_Loader.hpp
 optional

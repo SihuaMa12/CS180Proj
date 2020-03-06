@@ -50,6 +50,89 @@ bool Scene::trace(
 //
 // If the surface is duffuse/glossy we use the Phong illumation model to compute the color
 // at the intersection point.
+Vector3f Scene::align(const Vector3f& second, const Vector3f& first, const Vector3f& n) const
+{
+    Vector3f v = crossProduct(normalize(first), normalize(n));
+    float s = mag(v);
+    float c = dotProduct(normalize(first), normalize(n));
+    if(s<=0.0001)
+        return second;
+    Vector3f fiRow(-v[2]*v[2]-v[1]*v[1], v[1]*v[0], v[2]*v[0]);
+    Vector3f seRow(v[0]*v[1], -v[2]*v[2]-v[0]*v[0], v[2]*v[1]);
+    Vector3f thRow(v[0]*v[2], v[1]*v[2], -v[1]*v[1]-v[0]*v[0]);
+    fiRow = fiRow / (1+c);
+    seRow = seRow / (1+c);
+    thRow = thRow / (1+c);
+    fiRow[0] += 1, fiRow[1] -= v[2], fiRow[2] += v[1];
+    seRow[0] += v[2], seRow[1] += 1, seRow[2] -= v[0];
+    thRow[0] -= v[1], thRow[1] += v[0], thRow[2] += 1; 
+    
+    return Vector3f(dotProduct(fiRow, second), dotProduct(seRow, second), dotProduct(thRow, second));
+    // return v;
+    
+
+
+}
+
+Vector3f Scene::castar(const Ray &ray, int depth, int spp) const{
+    Vector3f returned(0,0,0);
+
+    if(depth > this->maxDepth)
+        return returned;
+
+    Ray copRay = ray;
+
+    Vector3f Beta(1,1,1);
+    Vector3f hitColor = this->backgroundColor;
+    bool bounSpec = false;
+
+    for(int i = 0;i < maxDepth;i++)
+    {
+    Intersection intersection = Scene::intersect(copRay);
+
+    Material *m = intersection.m;
+    Object *hitObject = intersection.obj;
+    
+
+    Vector2f uv;
+    uint32_t index = 0;
+
+    if(intersection.happened)
+    {
+        Vector3f hitPoint = intersection.coords;
+        Vector3f N = intersection.normal;
+        Vector2f st;
+        float pdf = 0;
+
+        hitObject->getSurfaceProperties(hitPoint, ray.direction, index, uv, N, st);
+        Ray wi(hitPoint, Vector3f(0,0,0));
+
+        switch(m->getType())
+        {
+            case DIFFUSE_AND_GLOSSY:
+            {
+                Vector3f shadowPointOrig = (dotProduct(copRay.direction, N) < 0) ?
+                                           hitPoint + N * EPSILON :
+                                           hitPoint - N * EPSILON ;
+
+                
+                m->Sample_f(Ray(-copRay.direction, copRay.origin), wi, pdf, N);
+
+            }
+        }
+
+    }
+    }
+
+
+
+
+    
+
+    return returned;
+}
+
+
 Vector3f Scene::castRay(const Ray &ray, int depth) const
 {
     if (depth > this->maxDepth) {
@@ -100,6 +183,7 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
             }
             default:
             {
+                // std::cout << "defar" << std::endl;
                 // [comment]
                 // We use the Phong illumation model int the default case. The phong model
                 // is composed of a diffuse and a specular reflection component.
@@ -132,8 +216,8 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
                         bool inShadow = bvh->Intersect(Ray(shadowPointOrig, lightDir)).happened;
                         lightAmt += (1 - inShadow) * get_lights()[i]->intensity * LdotN;
                         Vector3f reflectionDirection = reflect(-lightDir, N);
-                        specularColor += powf(std::max(0.f, -dotProduct(reflectionDirection, ray.direction)),
-                                              m->specularExponent) * get_lights()[i]->intensity;
+                        float cool = dotProduct(normalize(-ray.direction), normalize(reflectionDirection));
+                        specularColor += powf(std::max(0.f, cool),m->specularExponent) * get_lights()[i]->intensity;
                     }
                 }
                 hitColor = lightAmt * (hitObject->evalDiffuseColor(st) * m->Kd + specularColor * m->Ks);

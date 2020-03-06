@@ -18,12 +18,13 @@ int main(int argc, char** argv)
     scene.Add(&bunny);
     scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 20), 1));
     scene.Add(std::make_unique<Light>(Vector3f(20, 70, 20), 1));
+    scene.Add(std::make_unique<Light>(Vector3f(20, 40, 20), 1));
     scene.buildBVH();
 
     Renderer r;
 
     auto start = std::chrono::system_clock::now();
-    r.Render(scene);
+    r.Render(scene, 1);
     auto stop = std::chrono::system_clock::now();
 
     std::cout << "Render complete: \n";

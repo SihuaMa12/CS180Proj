@@ -21,6 +21,8 @@ struct Ray{
 
     Vector3f operator()(double t) const{return origin+direction*t;}
 
+    Ray operator= (const Ray& t) const {return Ray(t.origin, t.direction, t.t);}
+
     friend std::ostream &operator<<(std::ostream& os, const Ray& r){
         os<<"[origin:="<<r.origin<<", direction="<<r.direction<<", time="<< r.t<<"]\n";
         return os;

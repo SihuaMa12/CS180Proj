@@ -426,6 +426,7 @@ namespace objl
         template <class T>
         inline const T & getElement(const std::vector<T> &elements, std::string &index)
         {
+            // std::cout << "thisone" << std::endl;
             int idx = std::stoi(index);
             if (idx < 0)
                 idx = int(elements.size()) + idx;
@@ -571,10 +572,10 @@ namespace objl
                     Vector3 vpos;
                     algorithm::superSplit(algorithm::tail(curline), spos, " ");
                     for(int i = 0;i < spos.size();i++)
-                    std::cout << "he1" << std::endl;
-                    std::cout << curline << std::endl;
-                    for(int i = 0;i<spos.size();i++)
-                        std::cout << spos[i] <<" " << int(spos[i].c_str()[0])<< " " << spos[i].length()<<std::endl;
+                    // std::cout << "he1" << std::endl;
+                    // std::cout << curline << std::endl;
+                    // for(int i = 0;i<spos.size();i++)
+                        // std::cout << spos[i] <<" " << int(spos[i].c_str()[0])<< " " << spos[i].length()<<std::endl;
                     vpos.X = std::stof(spos[0]);
                     vpos.Y = std::stof(spos[1]);
                     vpos.Z = std::stof(spos[2]);
@@ -587,7 +588,7 @@ namespace objl
                     std::vector<std::string> stex;
                     Vector2 vtex;
                     algorithm::superSplit(algorithm::tail(curline), stex, " ");
-                    std::cout << "he2" << std::endl;
+                    // std::cout << "he2" << std::endl;
                     vtex.X = std::stof(stex[0]);
                     vtex.Y = std::stof(stex[1]);
 
@@ -600,7 +601,7 @@ namespace objl
                     Vector3 vnor;
                     algorithm::superSplit(algorithm::tail(curline), snor, " ");
 
-                    std::cout << "he3" << std::endl;
+                    // std::cout << "he3" << std::endl;
                     vnor.X = std::stof(snor[0]);
                     vnor.Y = std::stof(snor[1]);
                     vnor.Z = std::stof(snor[2]);
@@ -817,7 +818,7 @@ namespace objl
                 {
                     case 1: // P
                     {
-                        std::cout << "here" << (int)(sface[i].c_str()[0]) <<"e" <<std::endl;
+                        // std::cout << "here" << (int)(sface[i].c_str()[0]) <<"e" <<std::endl;
                         // std::cout << "first" << std::endl;
                         // std::cout << sface[i] << std::endl;
                         vVert.Position = algorithm::getElement(iPositions, svert[0]);
