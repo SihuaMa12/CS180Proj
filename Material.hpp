@@ -57,7 +57,7 @@ inline Vector3f align(const Vector3f& second, const Vector3f& first, const Vecto
 inline void Material::Sample_f(const Ray& wo, Ray& wi, float& pdf,const Vector3f& normal)
 {
     Vector3f dir = -wo.direction;
-
+    //should later switch to sampler
     std::default_random_engine re(std::random_device{}());
     std::uniform_real_distribution<float> dist(0.0, 1.0);
     float store1 = 0, store2 = 0;
@@ -72,7 +72,11 @@ inline void Material::Sample_f(const Ray& wo, Ray& wi, float& pdf,const Vector3f
             store2 = dist(re);
             theta = std::asin(std::sqrt(store1));
             phi = 2 * M_PI * store2;
-
+            Vector3f newone(0,0,0);
+            newone[0] = std::sin(theta) * std::cos(phi);
+            newone[1] = std::sin(theta) * std::sin(phi);
+            newone[2] = std::cos(theta);
+            wi.direction = align(newone, Vector3f(0,0,1), normal);
 
         }
     }

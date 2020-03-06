@@ -115,8 +115,12 @@ Vector3f Scene::castar(const Ray &ray, int depth, int spp) const{
                                            hitPoint + N * EPSILON :
                                            hitPoint - N * EPSILON ;
 
+                wi.origin = shadowPointOrig;
+
                 
                 m->Sample_f(Ray(-copRay.direction, copRay.origin), wi, pdf, N);
+
+                
 
             }
         }
