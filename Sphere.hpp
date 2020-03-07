@@ -1,7 +1,3 @@
-//
-// Created by LEI XU on 5/13/19.
-//
-
 #ifndef RAYTRACING_SPHERE_H
 #define RAYTRACING_SPHERE_H
 
@@ -14,10 +10,10 @@ class Sphere : public Object{
 public:
     Vector3f center;
     float radius, radius2;
-    Material *m;
+    Material *m;   //m
     Sphere(const Vector3f &c, const float &r) : center(c), radius(r), radius2(r * r), m(new Material()) {}
     bool intersect(const Ray& ray) {
-        // analytic solution
+
         Vector3f L = ray.origin - center;
         float a = dotProduct(ray.direction, ray.direction);
         float b = 2 * dotProduct(ray.direction, L);
@@ -30,7 +26,7 @@ public:
     }
     bool intersect(const Ray& ray, float &tnear, uint32_t &index) const
     {
-        // analytic solution
+
         Vector3f L = ray.origin - center;
         float a = dotProduct(ray.direction, ray.direction);
         float b = 2 * dotProduct(ray.direction, L);
