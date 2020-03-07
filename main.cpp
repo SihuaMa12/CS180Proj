@@ -3,6 +3,7 @@
 #include "Triangle.hpp"
 #include "Vector.hpp"
 #include "global.hpp"
+#include "Sphere.hpp"
 #include <chrono>
 
 // In the main function of the program, we create the scene (create objects and
@@ -15,7 +16,9 @@ int main(int argc, char** argv)
 
     MeshTriangle bunny("../models/bunny/bunny.obj");
 
-    scene.Add(&bunny);
+    Sphere sphere(Vector3f(0,0,-1), 2);
+   // scene.Add(&bunny);
+    scene.Add(&sphere);
     scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 20), 1));
     scene.Add(std::make_unique<Light>(Vector3f(20, 70, 20), 1));
     scene.Add(std::make_unique<Light>(Vector3f(20, 40, 20), 1));

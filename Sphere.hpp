@@ -11,7 +11,7 @@ public:
     Vector3f center;
     float radius, radius2;
     Material *m;   //m
-    Sphere(const Vector3f &c, const float &r) : center(c), radius(r), radius2(r * r), m(new Material()) {}
+    Sphere(const Vector3f &c, const float &r) : center(c), radius(r), radius2(r * r), m(new Material(DIFFUSE_AND_GLOSSY, Vector3f(0.3,0.4,0.5))) {}
     bool intersect(const Ray& ray) {
 
         Vector3f L = ray.origin - center;

@@ -132,6 +132,16 @@ BVH.hpp
 Ray.hpp
 /home/sihuama/CS180Proj/Ray.hpp
 
+/home/sihuama/CS180Proj/Sphere.hpp
+Object.hpp
+/home/sihuama/CS180Proj/Object.hpp
+Vector.hpp
+/home/sihuama/CS180Proj/Vector.hpp
+Bounds3.hpp
+/home/sihuama/CS180Proj/Bounds3.hpp
+Material.hpp
+/home/sihuama/CS180Proj/Material.hpp
+
 /home/sihuama/CS180Proj/Triangle.hpp
 BVH.hpp
 /home/sihuama/CS180Proj/BVH.hpp
@@ -179,6 +189,8 @@ Vector.hpp
 /home/sihuama/CS180Proj/Vector.hpp
 global.hpp
 /home/sihuama/CS180Proj/global.hpp
+Sphere.hpp
+/home/sihuama/CS180Proj/Sphere.hpp
 chrono
 -
 

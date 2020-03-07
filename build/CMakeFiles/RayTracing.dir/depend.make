@@ -52,6 +52,7 @@ CMakeFiles/RayTracing.dir/main.cpp.o: ../Object.hpp
 CMakeFiles/RayTracing.dir/main.cpp.o: ../Ray.hpp
 CMakeFiles/RayTracing.dir/main.cpp.o: ../Renderer.hpp
 CMakeFiles/RayTracing.dir/main.cpp.o: ../Scene.hpp
+CMakeFiles/RayTracing.dir/main.cpp.o: ../Sphere.hpp
 CMakeFiles/RayTracing.dir/main.cpp.o: ../Triangle.hpp
 CMakeFiles/RayTracing.dir/main.cpp.o: ../Vector.hpp
 CMakeFiles/RayTracing.dir/main.cpp.o: ../global.hpp

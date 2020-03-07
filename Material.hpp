@@ -86,6 +86,9 @@ Material::Material(MaterialType t, Vector3f c, Vector3f e){
     m_type = t;
     m_color = c;
     m_emission = e;
+    specularExponent = 0;
+    Kd = 0.3;
+    Ks = 0;
 }
 
 MaterialType Material::getType(){return m_type;}
