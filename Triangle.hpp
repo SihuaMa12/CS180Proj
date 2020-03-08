@@ -117,9 +117,9 @@ public:
             auto new_mat =
                 new Material(MaterialType::DIFFUSE_AND_GLOSSY,
                              Vector3f(0.5, 0.5, 0.5), Vector3f(0, 0, 0));
-            new_mat->Kd = 0.6;
-            new_mat->Ks = 0.2;
-            new_mat->specularExponent = 300;
+            new_mat->Kd = 0.4;
+            new_mat->Ks = 0;
+            new_mat->specularExponent = 1;
 
             triangles.emplace_back(face_vertices[0], face_vertices[1],
                                    face_vertices[2], new_mat);

@@ -80,8 +80,16 @@ inline Vector3f normalize(const Vector3f &v)
     return v;
 }
 
+
+
 inline float dotProduct(const Vector3f &a, const Vector3f &b)
 { return a.x * b.x + a.y * b.y + a.z * b.z; }
+
+inline float AbsDot(const Vector3f &a, const Vector3f &b)
+{
+    float result = dotProduct(a, b);
+    return result < 0? -result : result;
+}
 
 inline Vector3f crossProduct(const Vector3f &a, const Vector3f &b)
 {

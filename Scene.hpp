@@ -19,7 +19,7 @@ public:
     // setting up options
     int width = 1280;
     int height = 960;
-    double fov = 90;
+    double fov = 80;
     Vector3f backgroundColor = Vector3f(0.235294, 0.67451, 0.843137);
     int maxDepth = 5;
 
@@ -36,7 +36,7 @@ public:
     void buildBVH();
     Vector3f castRay(const Ray &ray, int depth) const;
     Vector3f align(const Vector3f& first, const Vector3f& second, const Vector3f& n) const;
-    Vector3f castar(const Ray& ray, int depth, int spp) const;
+    Vector3f castar(const Ray& ray, int spp) const;
     bool trace(const Ray &ray, const std::vector<Object*> &objects, float &tNear, uint32_t &index, Object **hitObject);
     std::tuple<Vector3f, Vector3f> HandleAreaLight(const AreaLight &light, const Vector3f &hitPoint, const Vector3f &N,
                                                    const Vector3f &shadowPointOrig,

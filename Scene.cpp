@@ -74,59 +74,137 @@ Vector3f Scene::align(const Vector3f& second, const Vector3f& first, const Vecto
 
 }
 
-Vector3f Scene::castar(const Ray &ray, int depth, int spp) const{
+Vector3f Scene::castar(const Ray &ray, int spp) const{
     Vector3f returned(0,0,0);
 
-    if(depth > this->maxDepth)
-        return returned;
-
-    Ray copRay = ray;
-
-    Vector3f Beta(1,1,1);
-    Vector3f hitColor = this->backgroundColor;
-    bool bounSpec = false;
-
-    for(int i = 0;i < maxDepth;i++)
-    {
-    Intersection intersection = Scene::intersect(copRay);
-
-    Material *m = intersection.m;
-    Object *hitObject = intersection.obj;
     
 
-    Vector2f uv;
-    uint32_t index = 0;
+    
 
-    if(intersection.happened)
+    
+    for(int we = 0; we < spp; we++)
     {
-        Vector3f hitPoint = intersection.coords;
-        Vector3f N = intersection.normal;
-        Vector2f st;
-        float pdf = 0;
-
-        hitObject->getSurfaceProperties(hitPoint, ray.direction, index, uv, N, st);
-        Ray wi(hitPoint, Vector3f(0,0,0));
-
-        switch(m->getType())
+        Ray copRay = ray;
+        // std::cout << "ray: " << ray << std::endl;
+        // std::cout << "copRay: " << copRay << std::endl;
+        float Beta = 1;
+        for(int i = 0;i < maxDepth;i++)
         {
-            case DIFFUSE_AND_GLOSSY:
+            // if(i > 0)
+                // std::cout << i << "th : " << Beta << std::endl;
+            Intersection intersection = Scene::intersect(copRay);
+
+            Material *m = intersection.m;
+            Object *hitObject = intersection.obj;
+            
+
+            Vector2f uv;
+            uint32_t index = 0;
+
+            if(intersection.happened)
             {
-                Vector3f shadowPointOrig = (dotProduct(copRay.direction, N) < 0) ?
-                                           hitPoint + N * EPSILON :
-                                           hitPoint - N * EPSILON ;
+                Vector3f hitPoint = intersection.coords;
+                Vector3f N = intersection.normal;
+                Vector2f st;
+                float pdf = 0;
+                // std::cout << Beta << std::endl;
 
-                wi.origin = shadowPointOrig;
+                //get Normal
+                hitObject->getSurfaceProperties(hitPoint, copRay.direction, index, uv, N, st);
 
-                
-                m->Sample_f(Ray(-copRay.direction, copRay.origin), wi, pdf, N);
+                //initialize wi
+                Ray wi(hitPoint, Vector3f(0,0,0));
 
-                
+                switch(m->getType())
+                {
+                    case DIFFUSE_AND_GLOSSY:
+                    {
+                        
+                        Vector3f shadowPointOrig = (dotProduct(copRay.direction, N) < 0) ?
+                                                hitPoint + N * EPSILON :
+                                                hitPoint - N * EPSILON ;
+                        
+                        Vector3f reN = (dotProduct(copRay.direction, N) < 0) ?
+                                        N:
+                                        -N;
+                                        
+
+                        Vector3f lightAmt(0,0,0);
+                        Vector3f specularColor(0,0,0);
+                        for (uint32_t i = 0; i < get_lights().size(); ++i)
+                        {
+                            auto area_ptr = dynamic_cast<AreaLight*>(this->get_lights()[i].get());
+                            if (area_ptr)
+                            {
+                                // Do nothing for this assignment
+                            }
+                            else
+                            {
+                                Vector3f lightDir = get_lights()[i]->position - hitPoint;
+                                // square of the distance between hitPoint and the light
+                                // float lightDistance2 = dotProduct(lightDir, lightDir);
+                                lightDir = normalize(lightDir);
+                                // float LdotN = std::max(0.f, dotProduct(lightDir, N));
+                                float LdotN = AbsDot(normalize(lightDir), normalize(N));
+                                Object *shadowHitObject = nullptr;
+                                // float tNearShadow = kInfinity;
+                                // is the point in shadow, and is the nearest occluding object closer to the object than the light itself?
+                                bool inShadow = bvh->Intersect(Ray(shadowPointOrig, lightDir)).happened;
+                                lightAmt += (1 - inShadow) * get_lights()[i]->intensity * LdotN;
+                                // Vector3f reflectionDirection = reflect(-lightDir, N);
+                                // float cool = AbsDot(normalize(-copRay.direction), normalize(reflectionDirection));
+                                // specularColor += powf(cool,m->specularExponent) * get_lights()[i]->intensity;
+                            }
+                        }
+
+                        
+                        Vector3f seeing = Beta * (lightAmt * (hitObject->evalDiffuseColor(st) * m->Kd + specularColor * m->Ks));
+                        // if(seeing[0] > 1)
+                        // std::cout <<seeing << std::endl;
+                        
+                        returned += seeing;
+                        // std::cout << i << " th: " << returned << std::endl;
+
+                        wi.origin = shadowPointOrig;
+
+                        
+                        float f = m->Sample_f(Ray(copRay.origin, -copRay.direction), wi, pdf, reN);
+                        // if(dotProduct(reN, wi.direction) < 0 || dotProduct(reN, -copRay.direction) < 0)
+                            // std::cout << "crap" <<std::endl;
+
+                        copRay = Ray(shadowPointOrig, wi.direction);
+                        // std::cout << copRay.origin << " " << shadowPointOrig << std::endl;
+
+                        Beta *= f * AbsDot(normalize(wi.direction), N) / pdf;
+                        // std::cout << i << " " << Beta << std::endl;
+
+                        
+
+                    }
+                }
 
             }
+            else
+            {
+                // returned += Beta * 0.1 * 
+                if(i == 0)
+                    returned += backgroundColor;
+                else
+                    returned += Beta * backgroundColor;
+                
+                break;
+            }
+            
         }
 
+        
+
+
     }
-    }
+
+    returned = returned / spp;
+
+    // std::cout << returned;
 
 
 
@@ -180,9 +258,11 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
                 fresnel(ray.direction, N, m->ior, kr);
                 Vector3f reflectionDirection = reflect(ray.direction, N);
                 Vector3f reflectionRayOrig = (dotProduct(reflectionDirection, N) < 0) ?
-                                             hitPoint + N * EPSILON :
-                                             hitPoint - N * EPSILON;
+                                             hitPoint - N * EPSILON :
+                                             hitPoint + N * EPSILON;
                 hitColor = castRay(Ray(reflectionRayOrig, reflectionDirection),depth + 1) * kr;
+                // if(depth == 0)
+                    // std::cout << hitColor << std::endl;
                 break;
             }
             default:
@@ -213,22 +293,26 @@ Vector3f Scene::castRay(const Ray &ray, int depth) const
                         // square of the distance between hitPoint and the light
                         float lightDistance2 = dotProduct(lightDir, lightDir);
                         lightDir = normalize(lightDir);
-                        float LdotN = std::max(0.f, dotProduct(lightDir, N));
+                        // float LdotN = std::max(0.f, dotProduct(lightDir, N));
+                        float LdotN = AbsDot(lightDir, N);
                         Object *shadowHitObject = nullptr;
-                        float tNearShadow = kInfinity;
+                        // float tNearShadow = kInfinity;
                         // is the point in shadow, and is the nearest occluding object closer to the object than the light itself?
                         bool inShadow = bvh->Intersect(Ray(shadowPointOrig, lightDir)).happened;
                         lightAmt += (1 - inShadow) * get_lights()[i]->intensity * LdotN;
                         Vector3f reflectionDirection = reflect(-lightDir, N);
-                        float cool = dotProduct(normalize(-ray.direction), normalize(reflectionDirection));
-                        specularColor += powf(std::max(0.f, cool),m->specularExponent) * get_lights()[i]->intensity;
+                        float cool = AbsDot(normalize(-ray.direction), normalize(reflectionDirection));
+                        specularColor += powf(cool,m->specularExponent) * get_lights()[i]->intensity;
                     }
                 }
                 hitColor = lightAmt * (hitObject->evalDiffuseColor(st) * m->Kd + specularColor * m->Ks);
+                // if(depth == 0)
+                //     std::cout << hitColor << std::endl;
                 break;
             }
         }
     }
+    
 
     return hitColor;
 }

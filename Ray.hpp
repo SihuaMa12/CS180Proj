@@ -19,6 +19,26 @@ struct Ray{
 
     }
 
+    Ray(const Ray& t)
+    {
+        this->origin = t.origin;
+        this->direction = t.direction;
+        this->direction_inv = t.direction_inv;
+        this->t = t.t;
+        this->t_min = t.t_min;
+        this->t_max = t.t_max;
+    }
+
+    Ray& operator= (const Ray& t)
+    {
+        this->direction = t.direction;
+        this->direction_inv = t.direction_inv;
+        this->origin = t.origin;
+        this->t = t.t;
+        this->t_min = t.t_min;
+        this->t_max = t.t_max;
+    }
+
     Vector3f operator()(double t) const{return origin+direction*t;}
 
     Ray operator= (const Ray& t) const {return Ray(t.origin, t.direction, t.t);}
