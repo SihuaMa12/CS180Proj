@@ -50,29 +50,32 @@ bool Scene::trace(
 //
 // If the surface is duffuse/glossy we use the Phong illumation model to compute the color
 // at the intersection point.
-Vector3f Scene::align(const Vector3f& second, const Vector3f& first, const Vector3f& n) const
-{
-    Vector3f v = crossProduct(normalize(first), normalize(n));
-    float s = mag(v);
-    float c = dotProduct(normalize(first), normalize(n));
-    if(s<=0.0001)
-        return second;
-    Vector3f fiRow(-v[2]*v[2]-v[1]*v[1], v[1]*v[0], v[2]*v[0]);
-    Vector3f seRow(v[0]*v[1], -v[2]*v[2]-v[0]*v[0], v[2]*v[1]);
-    Vector3f thRow(v[0]*v[2], v[1]*v[2], -v[1]*v[1]-v[0]*v[0]);
-    fiRow = fiRow / (1+c);
-    seRow = seRow / (1+c);
-    thRow = thRow / (1+c);
-    fiRow[0] += 1, fiRow[1] -= v[2], fiRow[2] += v[1];
-    seRow[0] += v[2], seRow[1] += 1, seRow[2] -= v[0];
-    thRow[0] -= v[1], thRow[1] += v[0], thRow[2] += 1; 
+// Vector3f Scene::align(const Vector3f& second, const Vector3f& first, const Vector3f& n) const
+// {
+//     Vector3f v = crossProduct(normalize(first), normalize(n));
+//     float s = mag(v);
+//     float c = dotProduct(normalize(first), normalize(n));
+//     if(s<=0.0001)
+//         return second;
+//     Vector3f fiRow(-v[2]*v[2]-v[1]*v[1], v[1]*v[0], v[2]*v[0]);
+//     Vector3f seRow(v[0]*v[1], -v[2]*v[2]-v[0]*v[0], v[2]*v[1]);
+//     Vector3f thRow(v[0]*v[2], v[1]*v[2], -v[1]*v[1]-v[0]*v[0]);
+//     fiRow = fiRow / (1+c);
+//     seRow = seRow / (1+c);
+//     thRow = thRow / (1+c);
+//     fiRow[0] += 1, fiRow[1] -= v[2], fiRow[2] += v[1];
+//     seRow[0] += v[2], seRow[1] += 1, seRow[2] -= v[0];
+//     thRow[0] -= v[1], thRow[1] += v[0], thRow[2] += 1; 
     
-    return Vector3f(dotProduct(fiRow, second), dotProduct(seRow, second), dotProduct(thRow, second));
-    // return v;
+//     return Vector3f(dotProduct(fiRow, second), dotProduct(seRow, second), dotProduct(thRow, second));
+//     // return v;
     
 
 
-}
+// }
+
+#pragma omp declare reduction(VectorPlus: Vector3f: \
+        omp_out += omp_in)
 
 Vector3f Scene::castar(const Ray &ray, int spp) const{
     Vector3f returned(0,0,0);
@@ -81,7 +84,7 @@ Vector3f Scene::castar(const Ray &ray, int spp) const{
 
     
 
-    
+    #pragma omp parallel for reduction(VectorPlus:returned)
     for(int we = 0; we < spp; we++)
     {
         Ray copRay = ray;
@@ -186,11 +189,7 @@ Vector3f Scene::castar(const Ray &ray, int spp) const{
             }
             else
             {
-                // returned += Beta * 0.1 * 
-                if(i == 0)
-                    returned += backgroundColor;
-                else
-                    returned += Beta * backgroundColor;
+                returned += Beta * backgroundColor;
                 
                 break;
             }
