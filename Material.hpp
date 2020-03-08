@@ -82,7 +82,7 @@ inline float Material::Sample_f(const Ray& wo, Ray& wi, float& pdf,const Vector3
             wi.direction = align(normalize(newone), Vector3f(0,0,1), normal);
             // if(dotProduct(normal, wi.direction) < 0)
                 // std::cout << "Found" << std::endl;
-            pdf = std::cos(theta) / M_PI;
+            pdf = std::cos(theta) / M_PI / 2;
             // std::cout << "test: " << dotProduct(normal, wi.direction) << std::endl;
             // std::cout << "before: " << wo.direction << " after: " << wi.direction << std::endl;
             return  Kd / M_PI;

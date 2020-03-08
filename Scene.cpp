@@ -189,7 +189,8 @@ Vector3f Scene::castar(const Ray &ray, int spp) const{
             }
             else
             {
-                returned += Beta * backgroundColor;
+                if(i == 0)
+                    returned += Beta * backgroundColor;
                 
                 break;
             }
