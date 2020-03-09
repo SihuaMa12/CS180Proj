@@ -118,18 +118,22 @@ Vector3f Scene::castar(const Ray &ray, int spp) const{
                 //initialize wi
                 Ray wi(hitPoint, Vector3f(0,0,0));
 
+
+                Vector3f shadowPointOrig = (dotProduct(copRay.direction, N) < 0) ?
+                                                hitPoint + N * EPSILON :
+                                                hitPoint - N * EPSILON ;
+                        
+                Vector3f reN = (dotProduct(copRay.direction, N) < 0) ?
+                                        N:
+                                        -N;
+
+
                 switch(m->getType())
                 {
                     case DIFFUSE_AND_GLOSSY:
                     {
                         
-                        Vector3f shadowPointOrig = (dotProduct(copRay.direction, N) < 0) ?
-                                                hitPoint + N * EPSILON :
-                                                hitPoint - N * EPSILON ;
                         
-                        Vector3f reN = (dotProduct(copRay.direction, N) < 0) ?
-                                        N:
-                                        -N;
                                         
 
                         Vector3f lightAmt(0,0,0);
@@ -180,9 +184,19 @@ Vector3f Scene::castar(const Ray &ray, int spp) const{
 
                         Beta *= f * AbsDot(normalize(wi.direction), N) / pdf;
                         // std::cout << i << " " << Beta << std::endl;
+                        break;
 
                         
 
+                    }
+
+                    case REFLECTION:
+                    {
+                        wi.origin = shadowPointOrig;
+                        wi.direction = reflect(copRay.direction, reN);
+                        copRay = Ray(shadowPointOrig, wi.direction);
+                        // Beta *= AbsDot(normalize(wi.direction), N);
+                        break;
                     }
                 }
 

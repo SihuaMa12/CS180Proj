@@ -53,6 +53,10 @@ inline Vector3f align(const Vector3f& second, const Vector3f& first, const Vecto
     return Vector3f(dotProduct(fiRow, second), dotProduct(seRow, second), dotProduct(thRow, second));
 }
 
+inline Vector3f reflect(const Vector3f &I, const Vector3f &N)
+{
+        return I - 2 * dotProduct(I, N) * N;
+}
 
 inline float Material::Sample_f(const Ray& wo, Ray& wi, float& pdf,const Vector3f& normal)
 {
@@ -88,6 +92,13 @@ inline float Material::Sample_f(const Ray& wo, Ray& wi, float& pdf,const Vector3
             return  Kd / M_PI;
             break;
 
+        }
+
+        case REFLECTION:
+        {
+            pdf = 1;
+            wi.direction = reflect(wi.direction, normal);
+            return 1;
         }
     }
 }
