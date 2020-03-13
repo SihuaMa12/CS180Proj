@@ -14,18 +14,18 @@ int main(int argc, char** argv)
 {
     Scene scene(1280, 960);
 
-    // MeshTriangle bunny("../models/Cornell/CornellBox-Sphere.obj");
-    MeshTriangle bunny("../models/bunny/bunny.obj");
+    MeshTriangle bunny("../models/Cornell/CornellBox-Sphere.obj");
+    // MeshTriangle bunny("../models/bunny/bunny.obj");
 
     // Sphere sphere(Vector3f(10,50,-30), 15);
     scene.Add(&bunny);
     // scene.Add(&sphere);
-    // scene.Add(std::make_unique<Light>(Vector3f(-1,50,100), 1));
-    // scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 100), 1));
-    scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 20), 2));
-    // scene.Add(std::make_unique<Light>(Vector3f(20, 70, 100), 1));
-    scene.Add(std::make_unique<Light>(Vector3f(10, 40, -20), 2));
-    scene.Add(std::make_unique<Light>(Vector3f(20, 40, 20), 2));
+    scene.Add(std::make_unique<Light>(Vector3f(-1,50,100), 1));
+    scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 100), 1));
+    // scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 20), 2));
+    scene.Add(std::make_unique<Light>(Vector3f(20, 70, 100), 1));
+    // scene.Add(std::make_unique<Light>(Vector3f(10, 40, -20), 2));
+    // scene.Add(std::make_unique<Light>(Vector3f(20, 40, 20), 2));
     scene.buildBVH();
 
     Renderer r;
