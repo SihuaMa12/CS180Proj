@@ -120,7 +120,7 @@ public:
 
             // if(so == 0)
             //     new_mat->m_type = MaterialType::REFLECTION;
-            new_mat->Kd = 0.6;
+            new_mat->Kd = 0.4;
             new_mat->Ks = 0;
             new_mat->specularExponent = 1;
 
