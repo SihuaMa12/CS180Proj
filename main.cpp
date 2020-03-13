@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     // Sphere sphere(Vector3f(10,50,-30), 15);
     scene.Add(&bunny);
     // scene.Add(&sphere);
-    scene.Add(std::make_unique<Light>(Vector3f(-1,50,100), 1));
+    // scene.Add(std::make_unique<Light>(Vector3f(-1,50,100), 1));
     scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 100), 1));
     // scene.Add(std::make_unique<Light>(Vector3f(-20, 70, 20), 2));
     scene.Add(std::make_unique<Light>(Vector3f(20, 70, 100), 1));
