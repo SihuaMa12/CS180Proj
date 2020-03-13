@@ -118,8 +118,8 @@ public:
                 new Material(MaterialType::DIFFUSE_AND_GLOSSY,
                              Vector3f(0.5, 0.5, 0.5), Vector3f(0, 0, 0));
 
-            if(so == 1)
-                new_mat->m_type = MaterialType::REFLECTION;
+            // if(so == 0)
+            //     new_mat->m_type = MaterialType::REFLECTION;
             new_mat->Kd = 0.4;
             new_mat->Ks = 0;
             new_mat->specularExponent = 1;

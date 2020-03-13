@@ -20,8 +20,8 @@ public:
     int width = 1280;
     int height = 960;
     double fov = 80;
-    Vector3f backgroundColor = Vector3f(0.235294, 0.67451, 0.843137) * 1.3;
-    int maxDepth = 5;
+    Vector3f backgroundColor = Vector3f(0.235294, 0.67451, 0.843137);
+    int maxDepth = 7;
 
     Scene(int w, int h) : width(w), height(h)
     {}
